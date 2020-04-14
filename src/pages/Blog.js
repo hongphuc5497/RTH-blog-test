@@ -8,9 +8,10 @@ import moment from "moment";
 function Blog(props) {
   const [blog, setBlog] = useState({});
   const [comments, setComments] = useState([]);
+  const [isNewComment, setIsNewComment] = useState(false);
   const { blogId } = props.match.params;
-  console.log(blog);
-  console.log(comments);
+
+  const postNewComment = () => setIsNewComment(!isNewComment);
 
   async function fetchBlog() {
     const res = await API.get(`/api/v1/blogs/${parseInt(blogId)}`);
@@ -23,8 +24,12 @@ function Blog(props) {
   }
 
   useEffect(() => {
-    Promise.all([fetchBlog(), fetchComments()]);
-  }, []);
+    if (Object.keys(blog).length == 0) {
+      Promise.all([fetchBlog(), fetchComments()]);
+    } else {
+      fetchComments();
+    }
+  }, [isNewComment]);
 
 
   return (
@@ -72,6 +77,7 @@ function Blog(props) {
 
                   <Comment 
                     blogId={parseInt(blogId)}
+                    postNewComment={postNewComment}
                   />
                 </div>
               </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import API from "../utils/API";
 import { toast } from 'react-toastify';
 
-function Comment({ blogId }) {
+function Comment({ blogId, postNewComment }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [content, setContent] = useState("");
@@ -21,6 +21,7 @@ function Comment({ blogId }) {
         setName("");
         setEmail("");
         setContent("");
+        postNewComment();
       } else {
         toast.error("Something wrong, please check again");
       }
@@ -69,7 +70,7 @@ function Comment({ blogId }) {
           />
         </div>
         <div className="form-group">
-          <input type="submit" defaultValue="Post Comment" className="btn btn-primary" />
+          <input type="submit" value="Post Comment" className="btn btn-primary" />
         </div>
       </form>
     </div>

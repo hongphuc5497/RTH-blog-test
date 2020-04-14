@@ -1,8 +1,28 @@
 import React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/auth';
+import { Button } from 'reactstrap';
+import API from "../utils/API";
+import { toast } from 'react-toastify';
 
 function BlogCard({ blog }) {
+  const { authToken } = useAuth();
+
+  function handleDeleteBlog(e) {
+    e.preventDefault();
+
+    API.delete(`/api/v1/blogs/${blog.id}`, {
+      headers: {
+        "Authorization": `Bearer ${authToken}`
+      }
+    }).then(res => {
+      toast.success("Blog delete!");
+    }).catch(err => 
+      console.log(err)  
+    )
+  }
+
   return (
     <div className="col-lg-4 mb-4">
       <div className="entry2">
@@ -17,7 +37,17 @@ function BlogCard({ blog }) {
             <span>{moment(blog.created_at).format("MMM Do, YYYY")}</span>
           </div>
           <p>{blog.description}</p>
-          <p><Link to={`/blog/${blog.id}`}>Read More</Link></p>
+          <p>
+            <Link to={`/blog/${blog.id}`}>Read More</Link>
+          </p>
+          {
+            authToken && (
+              <div>
+                <Button color="primary" >Edit</Button>
+                <Button className="ml-2" onClick={handleDeleteBlog} >Delete</Button>
+              </div>
+            )
+          }
         </div>
       </div>
     </div>

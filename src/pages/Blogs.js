@@ -1,21 +1,39 @@
-import React, {useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BlogCard from "../components/BlogCard";
 import API from "../utils/API";
+import { Button } from 'reactstrap';
+import moment from 'moment';
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
-  console.log(blogs);
+  const [isSorted, setIsSorted] = useState(false);
 
   async function fetchBlogs() {
     const res = await API.get('/api/v1/blogs');
     setBlogs(res.data.blogs);
   }
 
+  function sortNewestDate() {
+    const sortedAscDate = [...blogs].sort((a, b) => moment(b.created_at).format('YYYYMMDD') - moment(a.created_at).format('YYYYMMDD'));
+
+    setBlogs(sortedAscDate);
+    setIsSorted(!isSorted);
+  }
+
+  function sortOldestDate() {
+    const sortedDescDate = [...blogs].sort((a, b) => moment(a.created_at).format('YYYYMMDD') - moment(b.created_at).format('YYYYMMDD'));
+
+    setBlogs(sortedDescDate);
+    setIsSorted(!isSorted);
+  }
+
   useEffect(() => {
-    fetchBlogs();
-  }, []);
+    if (blogs.length == 0) {
+      fetchBlogs();
+    }
+  }, [isSorted]);
 
   return (
     <div className="site-wrap">
@@ -71,19 +89,26 @@ function Blogs() {
       <div className="site-section">
         <div className="container">
           <div className="row mb-5">
-            <div className="col-12">
+            <div className="col-4">
               <h2>Recent Posts</h2>
             </div>
+            <div className="col-4 offset-4 text-right">
+              <Button color="info" onClick={sortNewestDate}>Newest</Button>
+              <Button color="warning" className="ml-2" onClick={sortOldestDate}>Oldest</Button>
+            </div>
           </div>
-          <div className="row">
-            {blogs.map((blog, index) => (
-              <BlogCard
-                key={index}
-                blog={blog}
-              />
-            ))
-            }
-          </div>
+          {
+            <div className="row">
+              {blogs.map((blog, index) => (
+                <BlogCard
+                  key={index}
+                  blog={blog}
+                />
+              ))
+              }
+            </div>
+
+          }
 
           <div className="row text-center pt-5 border-top">
             <div className="col-md-12">

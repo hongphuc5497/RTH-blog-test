@@ -22,6 +22,11 @@ function Header(props) {
           <div className="col-8 text-right">
             <nav className="site-navigation" role="navigation">
               <ul className="site-menu js-clone-nav mr-auto d-none d-lg-block mb-0">
+                <li>
+                  <Link to="/">
+                    Home
+                  </Link>
+                </li>
                 {
                   authToken && <li><Link to="/create-blog">Create blog</Link></li>
                 }

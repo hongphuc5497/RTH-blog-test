@@ -34,6 +34,7 @@ function CreateBlog(props) {
         setBody("");
         setImage(null);
         imageInputRef.current.value = "";
+        props.history.push("/");
       } else {
         toast.error("Something wrong, please check again");
       }
@@ -99,7 +100,7 @@ function CreateBlog(props) {
                   />
                 </div>
                 <div className="form-group">
-                  <input type="submit" defaultValue="Create blog" className="btn btn-primary" />
+                  <input type="submit" value="Create blog" className="btn btn-primary" />
                 </div>
               </form>
             </div>
