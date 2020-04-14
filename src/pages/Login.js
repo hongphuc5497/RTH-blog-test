@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { useAuth } from "../context/auth";
 import API from "../utils/API";
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
@@ -8,9 +8,12 @@ import { withRouter } from 'react-router-dom';
 
 
 function Login(props) {
+  const { setAuthToken, setAuthName, setAuthEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setAuthToken } = useAuth();
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  const { referrer } = props.location.state || { referrer: { pathname: "/" } };
 
   function handleLogin(e) {
     e.preventDefault();
@@ -23,14 +26,21 @@ function Login(props) {
     }).then(res => {
       if (res.status === 201) {
         setAuthToken(res.data.jwt);
-        toast.success('Success login');
-        props.history.push("/");
+        setAuthName(res.data.name);
+        setAuthEmail(res.data.email);
+
+        toast.success('Success login!');
+        setLoggedIn(true);
       } else {
         toast.error('Email or password provided were incorrect!');
       }
     }).catch(err => {
       toast.error('Email or password provided were incorrect!');
     })
+  }
+
+  if (isLoggedIn) {
+    return <Redirect to={referrer} />
   }
 
   return (

@@ -6,33 +6,47 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
-
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
 
 const Login = React.lazy(() => import('./pages/Login'));
 const Register = React.lazy(() => import('./pages/Register'));
 const Blogs = React.lazy(() => import('./pages/Blogs'));
 const Blog = React.lazy(() => import('./pages/Blog'));
+const CreateBlog = React.lazy(() => import('./pages/CreateBlog'));
 
-function App(props) {
+function App() {
   const existingToken = localStorage.getItem("token");
+  const existingName = localStorage.getItem("name");
+  const existingEmail = localStorage.getItem("emai");
+
   const [authToken, setAuthToken] = useState(existingToken);
+  const [name, setAuthName] = useState(existingName);
+  const [email, setAuthEmail] = useState(existingEmail);
 
   const setToken = (token) => {
-    localStorage.setItem("token", JSON.stringify(token));
+    localStorage.setItem("token", token);
     setAuthToken(token);
+  }
+  const setName = (name) => {
+    localStorage.setItem("name", name);
+    setAuthName(name);
+  }
+  const setEmail = (email) => {
+    localStorage.setItem("email", email);
+    setAuthEmail(email);
   }
 
   return (
     <>
-      <AuthContext.Provider value={{ authToken, setAuthToken: setToken }}>
+      <AuthContext.Provider value={{ authToken, setAuthToken: setToken, name, setAuthName: setName, email, setAuthEmail: setEmail }}>
         <Router>
           <React.Suspense fallback={loading()}>
             <Switch>
               <Route exact path="/login" name="Login page" render={props => <Login {...props} />} />
               <Route exact path="/register" name="Register page" render={props => <Register {...props} />} />
-              <Route exact path="/" name="Home page" render={props => <Blogs {...props} />} />
-              <Route exact path="/blog" name="Blog detail page" render={props => <Blog {...props} />} />
+              <Route exact path="/" name="Blogs page" component={Blogs} />
+              <Route path="/blog/:blogId" name="Blog detail page" component={Blog} />
+              <PrivateRoute exact path="/create-blog" name="Create blog page" component={CreateBlog}/>
             </Switch>
           </React.Suspense>
         </Router>
