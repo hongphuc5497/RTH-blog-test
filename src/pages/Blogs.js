@@ -5,14 +5,19 @@ import BlogCard from "../components/BlogCard";
 import API from "../utils/API";
 import { Button } from 'reactstrap';
 import moment from 'moment';
+import Pagination from 'react-js-pagination';
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [activePage, setActivePage] = useState(pagination.current_page);
   const [isSorted, setIsSorted] = useState(false);
+  console.log(pagination);
 
   async function fetchBlogs() {
     const res = await API.get('/api/v1/blogs');
     setBlogs(res.data.blogs);
+    setPagination(res.data.meta.pagination);
   }
 
   function sortNewestDate() {
@@ -29,11 +34,23 @@ function Blogs() {
     setIsSorted(!isSorted);
   }
 
+  function handlePageChange(pageNumber) {
+    setActivePage(pageNumber);   
+    
+    const fetchBlogWithPaginate = async () => {
+      const res = await API.get(`/api/v1/blogs?page=${pageNumber}`);
+
+      setBlogs(res.data.blogs);
+      setPagination(res.data.meta.pagination);
+    }
+    fetchBlogWithPaginate();
+  }
+
   useEffect(() => {
     if (blogs.length == 0) {
       fetchBlogs();
     }
-  }, [isSorted]);
+  }, [isSorted, blogs]);
 
   return (
     <div className="site-wrap">
@@ -112,14 +129,15 @@ function Blogs() {
 
           <div className="row text-center pt-5 border-top">
             <div className="col-md-12">
-              <div className="custom-pagination">
-                <span>1</span>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-                <span>...</span>
-                <a href="#">15</a>
-              </div>
+              <Pagination 
+                itemClass="page-item"
+                linkClass="page-link"
+                hideDisabled
+                totalItemsCount={pagination.total_objects}
+                itemsCountPerPage={6}
+                activePage={activePage}
+                onChange={handlePageChange}
+              />
             </div>
           </div>
         </div>
