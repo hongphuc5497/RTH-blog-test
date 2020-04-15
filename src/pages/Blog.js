@@ -24,7 +24,7 @@ function Blog(props) {
   }
 
   useEffect(() => {
-    if (Object.keys(blog).length == 0) {
+    if (Object.keys(blog).length === 0) {
       Promise.all([fetchBlog(), fetchComments()]);
     } else {
       fetchComments();

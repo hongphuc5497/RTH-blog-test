@@ -21,6 +21,9 @@ function Blogs() {
   const [isSorted, setIsSorted] = useState(false);
   const [search, setSearch] = useState("");
 
+  const first5Blogs = blogs.slice(0, 5);
+  console.log(first5Blogs);
+
   async function fetchBlogs() {
     const res = await API.get('/api/v1/blogs');
     setBlogs(res.data.blogs);
@@ -69,7 +72,7 @@ function Blogs() {
   }
 
   useEffect(() => {
-    if (blogs.length == 0) {
+    if (blogs.length === 0) {
       fetchBlogs();
     }
   }, [isSorted, blogs]);
@@ -156,6 +159,7 @@ function Blogs() {
               {blogs.map((blog, index) => (
                 <BlogCard
                   key={index}
+                  id={index}
                   blog={blog}
                   setIsBlogDelete={handleDelete}
                 />
