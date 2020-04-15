@@ -9,10 +9,17 @@ import Pagination from 'react-js-pagination';
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
-  const [pagination, setPagination] = useState({});
+  const [pagination, setPagination] = useState(
+    {
+      "total_objects": 50,
+      "per_page": 10,
+      "total_pages": 10,
+      "current_page": 1
+    }
+  );
   const [activePage, setActivePage] = useState(pagination.current_page);
   const [isSorted, setIsSorted] = useState(false);
-  console.log(pagination);
+  const [search, setSearch] = useState("");
 
   async function fetchBlogs() {
     const res = await API.get('/api/v1/blogs');
@@ -35,8 +42,8 @@ function Blogs() {
   }
 
   function handlePageChange(pageNumber) {
-    setActivePage(pageNumber);   
-    
+    setActivePage(pageNumber);
+
     const fetchBlogWithPaginate = async () => {
       const res = await API.get(`/api/v1/blogs?page=${pageNumber}`);
 
@@ -44,6 +51,21 @@ function Blogs() {
       setPagination(res.data.meta.pagination);
     }
     fetchBlogWithPaginate();
+  }
+
+  function handleDelete(id) {
+    const cloneBlogs = blogs.filter(blog => blog.id !== id);
+    setBlogs(cloneBlogs);
+  }
+
+  function handleSearch() {
+    const fetchBlogWithSearch = async () => {
+      const res = await API.get(`/api/v1/blogs/?q[title_or_description_or_body_cont]=${search}`)
+
+      setBlogs(res.data.blogs);
+      setPagination(res.data.meta.pagination);
+    }
+    fetchBlogWithSearch();
   }
 
   useEffect(() => {
@@ -109,7 +131,22 @@ function Blogs() {
             <div className="col-4">
               <h2>Recent Posts</h2>
             </div>
-            <div className="col-4 offset-4 text-right">
+            <div className="form-group col-4 ">
+              <input
+                type="text"
+                id="search"
+                className="form-control"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                required
+              />
+            </div>
+            <div className="col-4">
+              <label htmlFor="search">
+                <Button className="mr-1" onClick={handleSearch}>
+                  Search
+                </Button>
+              </label>
               <Button color="info" onClick={sortNewestDate}>Newest</Button>
               <Button color="warning" className="ml-2" onClick={sortOldestDate}>Oldest</Button>
             </div>
@@ -120,6 +157,7 @@ function Blogs() {
                 <BlogCard
                   key={index}
                   blog={blog}
+                  setIsBlogDelete={handleDelete}
                 />
               ))
               }
@@ -129,7 +167,7 @@ function Blogs() {
 
           <div className="row text-center pt-5 border-top">
             <div className="col-md-12">
-              <Pagination 
+              <Pagination
                 itemClass="page-item"
                 linkClass="page-link"
                 hideDisabled

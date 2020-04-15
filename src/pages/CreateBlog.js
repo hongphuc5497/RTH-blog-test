@@ -9,8 +9,6 @@ function CreateBlog(props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
-  const [image, setImage] = useState(null);
-  const imageInputRef = useRef();
   const { authToken } = useAuth();
 
   function handleSubmit(e) {
@@ -20,7 +18,6 @@ function CreateBlog(props) {
       title,
       description,
       body,
-      image
     }, {
       headers: {
         "Authorization": `Bearer ${authToken}` 
@@ -32,8 +29,6 @@ function CreateBlog(props) {
         setTitle("");
         setDescription("");
         setBody("");
-        setImage(null);
-        imageInputRef.current.value = "";
         props.history.push("/");
       } else {
         toast.error("Something wrong, please check again");
@@ -72,18 +67,6 @@ function CreateBlog(props) {
                     value={description}
                     required
                     onChange={e => setDescription(e.target.value)}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="image">Image</label>
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    className="form-control" 
-                    id="image"
-                    onChange={e => setImage(console.log(e.target.files[0]))}
-                    ref={imageInputRef}
-                    required
                   />
                 </div>
                 <div className="form-group">

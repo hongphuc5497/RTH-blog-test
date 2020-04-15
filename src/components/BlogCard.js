@@ -6,7 +6,7 @@ import { Button } from 'reactstrap';
 import API from "../utils/API";
 import { toast } from 'react-toastify';
 
-function BlogCard({ blog }) {
+function BlogCard({ blog, setIsBlogDelete }) {
   const { authToken } = useAuth();
 
   function handleDeleteBlog(e) {
@@ -17,10 +17,11 @@ function BlogCard({ blog }) {
         "Authorization": `Bearer ${authToken}`
       }
     }).then(res => {
-      toast.success("Blog delete!");
-    }).catch(err => 
-      console.log(err)  
-    )
+      if (res.status == 200) {
+        toast.success('Blog deleted!');
+        setIsBlogDelete(blog.id);
+      }
+    })
   }
 
   return (
