@@ -45,7 +45,7 @@ function Blog(props) {
       <Header />
 
       <div>
-        <div className="site-cover site-cover-sm same-height overlay single-page" style={{ backgroundImage: 'url("images/img_2.jpg")' }}>
+        <div className="site-cover site-cover-sm same-height overlay single-page" style={{ backgroundImage: `url("${blog.image}")` }}>
           <div className="container">
             <div className="row same-height justify-content-center">
               <div className="col-md-12 col-lg-10">

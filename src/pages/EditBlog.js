@@ -12,6 +12,7 @@ function EditBlog(props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
+  const [image, setImage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { authToken } = useAuth();
   const { blogId } = props.match.params;
@@ -26,12 +27,31 @@ function EditBlog(props) {
     }
   }
 
-  async function updateBlog() {
-    try {
-      
-    } catch (err) {
-      toast.error("Something wrong, please check again");;
-    }
+  function updateBlog(e) {
+    e.preventDefault();
+
+    API.patch(`/api/v1/blogs/${parseInt(blogId)}`,{
+      title,
+      description,
+      body,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${authToken}` 
+      }
+    }).then(res =>{
+      if (res.status === 200) {
+        toast.success("Blog updated!");
+        
+        setTitle("");
+        setDescription("");
+        setBody("");
+        props.history.push("/");
+      } else {
+        toast.error("Something wrong, please check again");
+      }
+    }).catch(err =>{
+      toast.error("Something wrong, please check again");
+    })
   }
 
   useEffect(() => {
@@ -42,6 +62,7 @@ function EditBlog(props) {
     setTitle(blog.title);
     setDescription(blog.description);
     setBody(blog.body);
+    setImage(blog.image);
     setIsLoading(!isLoading);
   }, [blog]);
 
@@ -52,6 +73,7 @@ function EditBlog(props) {
       title,
       description,
       body,
+      image
     }, {
       headers: {
         "Authorization": `Bearer ${authToken}`
@@ -80,7 +102,7 @@ function EditBlog(props) {
         <div className="container">
           <div className="row blog-entries element-animate">
             <div className="col-md-12 main-content">
-              <form onSubmit={handleSubmit} className="p-5 bg-light">
+              <form onSubmit={updateBlog} className="p-5 bg-light">
                 <div className="form-group">
                   <label htmlFor="title">Title</label>
                   <input
@@ -114,6 +136,17 @@ function EditBlog(props) {
                     value={body}
                     onChange={e => setBody(e.target.value)}
                     required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="title">URL Image</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    id="image" 
+                    required
+                    value={image}
+                    onChange={e => setImage(e.target.value)}
                   />
                 </div>
                 <div className="form-group">

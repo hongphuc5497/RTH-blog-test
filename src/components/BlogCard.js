@@ -5,16 +5,10 @@ import { useAuth } from '../context/auth';
 import { Button } from 'reactstrap';
 import API from "../utils/API";
 import { toast } from 'react-toastify';
-import images from '../assets/stylesheets/images/images';
 import noimage from "../assets/stylesheets/images/noimage.jpg";
 
-function BlogCard({ id, blog, setIsBlogDelete }) {
+function BlogCard({ blog, setIsBlogDelete }) {
   const { authToken } = useAuth();
-  
-  var image = images.find(image => image.id === id);
-  if (image === undefined) {
-    image = noimage;
-  } 
 
   function handleDeleteBlog(e) {
     e.preventDefault();
@@ -31,11 +25,13 @@ function BlogCard({ id, blog, setIsBlogDelete }) {
     })
   }
 
+  console.log(blog);
+
   return (
     <div className="col-lg-4 mb-4">
       <div className="entry2">
         <Link to={`/blog/${blog.id}`}>
-          <img src={image.src || image} alt={image.description || "no image"} className="img-fluid rounded" />
+          <img src={blog.image || noimage } alt="blog card image" className="img-fluid rounded" />
         </Link>
 
         <div className="excerpt">
