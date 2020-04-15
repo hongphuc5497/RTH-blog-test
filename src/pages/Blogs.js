@@ -21,13 +21,14 @@ function Blogs() {
   const [isSorted, setIsSorted] = useState(false);
   const [search, setSearch] = useState("");
 
-  const first5Blogs = blogs.slice(0, 5);
-  console.log(first5Blogs);
-
   async function fetchBlogs() {
-    const res = await API.get('/api/v1/blogs');
-    setBlogs(res.data.blogs);
-    setPagination(res.data.meta.pagination);
+    try {
+      const res = await API.get('/api/v1/blogs');
+      setBlogs(res.data.blogs);
+      setPagination(res.data.meta.pagination);
+    } catch(err) {
+      console.log(err);
+    }
   }
 
   function sortNewestDate() {
@@ -87,7 +88,7 @@ function Blogs() {
             <div className="col-md-4">
               <a href="single.html" className="h-entry mb-30 v-height gradient" style={{ backgroundImage: 'url("images/img_1.jpg")' }}>
                 <div className="text">
-                  <h2>The AI magically removes moving objects from videos.</h2>
+                <h2>The AI magically removes moving objects from videos.</h2>
                   <span className="date">July 19, 2019</span>
                 </div>
               </a>

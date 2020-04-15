@@ -14,13 +14,21 @@ function Blog(props) {
   const postNewComment = () => setIsNewComment(!isNewComment);
 
   async function fetchBlog() {
-    const res = await API.get(`/api/v1/blogs/${parseInt(blogId)}`);
-    setBlog(res.data);
+    try {
+      const res = await API.get(`/api/v1/blogs/${parseInt(blogId)}`);
+      setBlog(res.data);
+    } catch(err) {
+      console.log(err);
+    }
   }
 
   async function fetchComments() {
-    const res = await API.get(`/api/v1/blogs/${parseInt(blogId)}/comments`);
-    setComments(res.data);
+    try {
+      const res = await API.get(`/api/v1/blogs/${parseInt(blogId)}/comments`);
+      setComments(res.data);
+    } catch(err) {
+      console.log(err);
+    }
   }
 
   useEffect(() => {

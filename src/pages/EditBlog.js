@@ -1,31 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/auth";
 import API from "../utils/API";
 import { toast } from 'react-toastify';
+import { Spinner } from 'reactstrap';
+import Blogs from './Blogs';
 
-function CreateBlog(props) {
+function EditBlog(props) {
+  const [blog, setBlog] = useState({});
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const { authToken } = useAuth();
+  const { blogId } = props.match.params;
+
+  async function fetchBlog() {
+    try {
+      const res = await API.get(`/api/v1/blogs/${parseInt(blogId)}`);
+
+      setBlog(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function updateBlog() {
+    try {
+      
+    } catch (err) {
+      toast.error("Something wrong, please check again");;
+    }
+  }
+
+  useEffect(() => {
+    fetchBlog();
+  }, []);
+
+  useEffect(() => {
+    setTitle(blog.title);
+    setDescription(blog.description);
+    setBody(blog.body);
+    setIsLoading(!isLoading);
+  }, [blog]);
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    API.post('/api/v1/blogs',{
+    API.post('/api/v1/blogs', {
       title,
       description,
       body,
     }, {
       headers: {
-        "Authorization": `Bearer ${authToken}` 
+        "Authorization": `Bearer ${authToken}`
       }
-    }).then(res =>{
+    }).then(res => {
       if (res.status === 201) {
         toast.success("Blog created!");
-        
+
         setTitle("");
         setDescription("");
         setBody("");
@@ -33,7 +67,7 @@ function CreateBlog(props) {
       } else {
         toast.error("Something wrong, please check again");
       }
-    }).catch(err =>{
+    }).catch(err => {
       toast.error("Something wrong, please check again");
     })
   }
@@ -49,10 +83,10 @@ function CreateBlog(props) {
               <form onSubmit={handleSubmit} className="p-5 bg-light">
                 <div className="form-group">
                   <label htmlFor="title">Title</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    id="title" 
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="title"
                     required
                     value={title}
                     onChange={e => setTitle(e.target.value)}
@@ -60,10 +94,10 @@ function CreateBlog(props) {
                 </div>
                 <div className="form-group">
                   <label htmlFor="desc">Description</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    id="description" 
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="description"
                     value={description}
                     required
                     onChange={e => setDescription(e.target.value)}
@@ -71,19 +105,19 @@ function CreateBlog(props) {
                 </div>
                 <div className="form-group">
                   <label htmlFor="body">Content</label>
-                  <textarea 
-                    name="body" 
-                    id="body" 
-                    cols={30} 
-                    rows={10} 
-                    className="form-control" 
+                  <textarea
+                    name="body"
+                    id="body"
+                    cols={30}
+                    rows={10}
+                    className="form-control"
                     value={body}
                     onChange={e => setBody(e.target.value)}
                     required
                   />
                 </div>
                 <div className="form-group">
-                  <input type="submit" value="Create blog" className="btn btn-primary" />
+                  <input type="submit" value="Edit blog" className="btn btn-primary" />
                 </div>
               </form>
             </div>
@@ -96,4 +130,4 @@ function CreateBlog(props) {
   )
 }
 
-export default CreateBlog;
+export default EditBlog;

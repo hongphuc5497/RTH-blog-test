@@ -51,7 +51,9 @@ function BlogCard({ id, blog, setIsBlogDelete }) {
           {
             authToken && (
               <div>
-                <Button color="primary" >Edit</Button>
+                <Link to={`/blog/${blog.id}/edit-blog`}>
+                  <Button color="primary" >Edit</Button>
+                </Link>
                 <Button className="ml-2" onClick={handleDeleteBlog} >Delete</Button>
               </div>
             )
@@ -62,4 +64,4 @@ function BlogCard({ id, blog, setIsBlogDelete }) {
   )
 }
 
-export default BlogCard;
+export default BlogCard

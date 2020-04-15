@@ -13,6 +13,7 @@ const Register = React.lazy(() => import('./pages/Register'));
 const Blogs = React.lazy(() => import('./pages/Blogs'));
 const Blog = React.lazy(() => import('./pages/Blog'));
 const CreateBlog = React.lazy(() => import('./pages/CreateBlog'));
+const EditBlog = React.lazy(() => import('./pages/EditBlog'));
 
 function App() {
   const existingToken = localStorage.getItem("token");
@@ -44,8 +45,9 @@ function App() {
             <Switch>
               <Route exact path="/login" name="Login page" render={props => <Login {...props} />} />
               <Route exact path="/register" name="Register page" render={props => <Register {...props} />} />
-              <Route exact path="/" name="Blogs page" component={Blogs} />
-              <Route path="/blog/:blogId" name="Blog detail page" component={Blog} />
+              <Route exact path="/" name="Blogs page" render={props => <Blogs {...props} />} />
+              <Route exact path="/blog/:blogId" name="Blog detail page" render={props => <Blog {...props} />} />
+              <Route exact path="/blog/:blogId/edit-blog" name="Edit blog page" render={props => <EditBlog {...props} />} />
               <PrivateRoute exact path="/create-blog" name="Create blog page" component={CreateBlog}/>
             </Switch>
           </React.Suspense>
